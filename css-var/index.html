@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="css variable">
+    <title>Document</title>
+    <style>
+        /* css style inside head */
+        
+        /* declaration of variable in css */
+        :root {
+            --spacing: 10px;
+            --blur: 10px;
+            --base: yellow;
+        }
+
+        /* assigning a variable to an html tag */
+        img {
+            padding: var(--spacing);
+            background: var(--base);
+            filter: blur(var(--blur));
+        }
+
+        /* setting background color & text align as well as font size */
+        body {
+            background-color: rgb(129, 182, 212);
+            text-align: center;
+            color: white;
+            font-size: 50px;
+        }
+
+        /* setting h1 class for JS word */    
+        .h1 {
+            color: var(--base);
+        }
+
+        /* creating input item inside control class and set margin botom 50px */
+        .controls {
+            margin-bottom: 50px;;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Update CSS Variables with <span class="h1">JS</span></h1>
+        
+        <!-- control class where input with slider and color picker for modification of variable in css -->
+        <div class="controls">
+            <label for="spacing">Spacing:</label>
+
+            <!-- name was set to be the same as variable name so we can set them later in javascript -->
+            <input type="range" name="spacing" min="10" max="200" value="10" data-sizing="px">
+            <label for="blur">Blur</label>
+            <input type="range" name="blur" min="0" max="25" value="10" data-sizing="px">
+            <label for="base">BaseColor</h2>
+            <input type="color" name="base" value="#ffe121">
+        </div>
+        <img src="./Congratulations!.png" style="width:800px;">
+    </main>
+
+    <script>
+        // get all the input element from HTML
+        const input = document.querySelectorAll(".controls input");
+
+        // function to set the css variable
+        function handleInput() {
+
+            // get the suffix from the data-sizing attribute as slider value return number 
+            // without any suffix
+            const suffix = this.dataset.sizing || '';
+
+            // get the root element to set the attribute property and add suffix at the end
+            const rootElement = document.documentElement;
+            rootElement.style.setProperty(`--${this.name}`, `${this.value}${suffix}`);
+        }
+
+        // event listener for each input, change will detect the changes in the slider 
+        // but if user slide the slider changes is not directly seen until user release
+        // the mouse, with mousemove, changes reflected when user slide the slider.
+        input.forEach( x => x.addEventListener('change', handleInput));
+        input.forEach( x => x.addEventListener('mousemove', handleInput));
+    </script>
+</body>
+</html>

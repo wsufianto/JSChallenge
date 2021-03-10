@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link href="style2.css" rel="stylesheet" />
+  </head>
+  <body>
+    <form class="searchbox">
+      <input type="text" class="search" placeholder="city or state" />
+      <ul class="suggestion">
+        <li>Filter for a City</li>
+        <li>or State</li>
+      </ul>
+    </form>
+
+    <script>
+      // example of data in the database
+      const endpoint =
+        "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
+
+      // fetch data from the database
+      async function fetchData() {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        return data;
+      }
+
+      // push the data into array of result
+      const result = [];
+      fetchData().then((data) => result.push(...data));
+
+      // get the input & ul list element from HTML
+      const input = document.querySelector(".search");
+      const list = document.querySelector(".suggestion");
+
+      // function to find the city or state to match input from user
+      function findCity(wordToFind) {
+        const regex = new RegExp(wordToFind, "gi");
+        return result.filter((x) => {
+          if (x.city.match(regex) || x.state.match(regex)) {
+            return x;
+          }
+        });
+      }
+
+      function formatNumber(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      }
+
+      // function to display the result to user
+      function displayOutput(e) {
+        const output = findCity(e.target.value);
+        const regex = new RegExp(e.target.value, "gi");
+        const html = output
+        .map((place) => {
+              const cityName = place.city.replace(regex, `<span class="hl">${e.target.value}</span>`)
+              const stateName = place.state.replace(regex, `<span class="hl">${e.target.value}</span>`)
+            return `
+                    <li>
+                        <span class="name">${cityName}, ${stateName}</span>
+                        <span class="population">${formatNumber(place.population)}</span>
+                    </li>    
+                `;
+          })
+          .join("");
+        list.innerHTML = html;
+      }
+
+      input.addEventListener("change", displayOutput);
+      input.addEventListener("keyup", displayOutput);
+    </script>
+  </body>
+</html>
