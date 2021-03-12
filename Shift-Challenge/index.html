@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* set the background color & font color */
+        body {
+            background-color: coral;
+            color: rgb(134, 129, 129);
+        }
+
+        /* set the layout for the form  */
+        .formLayout {
+            max-width: 400px;
+            margin: 50px auto;
+            border-radius: 5px;
+            box-shadow: 10px 10px gray;
+            background-color: cornsilk;
+        }
+
+        /* set layout for the input box & label */
+        .cbLayout {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid gray;
+        }
+
+        /* set the last child of the input to have no bottom border */
+        .cbLayout:last-child {
+            border-bottom: 0;
+        }
+
+        /* set the input checkbox to be 50px wide */
+        input {
+            min-width: 50px;
+        }
+
+        /* if the input is checked, strike through the label text */
+        input:checked + label {
+            text-decoration: line-through;
+        }
+
+        /* set the label to have padding 20px & border-left line */
+        label {
+            padding: 20px;
+            border-left: 1px solid gray;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <form class="formLayout">
+            <div class="cbLayout">
+                <input type="checkbox">
+                <label for="cb1">This is an inbox layout</label>
+            </div>
+            <div class="cbLayout">
+                <input type="checkbox">
+                <label for="cb2">Check one item</label>
+            </div>
+            <div class="cbLayout">
+                <input type="checkbox">
+                <label for="cb3">Hold down your Shift key</label>
+            </div>
+            <div class="cbLayout">
+                <input type="checkbox">
+                <label for="cb4">Check a lower item</label>
+            </div>
+            <div class="cbLayout">
+                <input type="checkbox">
+                <label for="cb5">Everything in between should also be set to checked</label>
+            </div>
+            <div class="cbLayout">
+                <input type="checkbox">
+                <label for="cb6">Try do it without any libraries</label>
+            </div>
+            <div class="cbLayout">
+                <input type="checkbox">
+                <label for="cb7">Just regular JavaScript </label>
+            </div>
+            <div class="cbLayout">
+                <input type="checkbox">
+                <label for="cb8">Good Luck!</label>
+            </div>
+            <div class="cbLayout">
+                <input type="checkbox">
+                <label for="cb9">Don't forget to tweet your result!</label>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        // get all the input tag from HTML document
+        const inputItems = document.querySelectorAll('input[type="checkbox"]');
+
+        let lastChecked;
+
+        // function to set multiple select & deselect
+        const strike = (e) => {
+
+            // set a variable to check multiple selection
+            let inBetween = false;
+
+            // if shift key is hold and target is checked
+            if(e.shiftKey && e.target.checked) {
+                // for every input items, checked if it is the target and set 
+                // the flag to true , if target and last checked item is the same
+                // set the flag to false
+                inputItems.forEach(item => {
+                    if(item === e.target || item === lastChecked) {
+                        inBetween = !inBetween;
+                    } else if (e.target === lastChecked) {
+                        inBetween = false;
+                    }
+                    
+                    // if flag is true, check the box
+                    if (inBetween) {
+                        item.checked = true;
+                        lastChecked.checked = true;
+                    }
+                });
+                
+            // if shift key is hold and target is not checked 
+            // clear the selected checkbox up to user selected point    
+            } else if (e.shiftKey && !e.target.checked) {
+                // set the flag in between selected checkbox and end to true
+                inputItems.forEach(item => {
+                    if(item === lastChecked || item === e.target) {
+                        inBetween = !inBetween;
+                    }
+                    // if flag is true, uncheck the box
+                    if (inBetween) {
+                        item.checked = false;
+                        lastChecked.checked = false;
+                    }
+                });
+            } 
+
+            // record last checked item from user
+            lastChecked = e.target;
+        }
+
+        // add an event listener to listen to input checkbox 
+        inputItems.forEach(item => {
+            item.addEventListener('click',strike);
+        })
+    </script>
+</body>
+</html>
