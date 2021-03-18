@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Console Tricks!</title>
+</head>
+<body>
+
+  <p onClick="makeGreen()">×BREAK×DOWN×</p>
+
+  <script>
+    const dogs = [{ name: 'Snickers', age: 2 }, { name: 'hugo', age: 8 }];
+
+    function makeGreen() {
+      const p = document.querySelector('p');
+      p.style.color = '#BADA55';
+      p.style.fontSize = '50px';
+    }
+
+    // Regular - to log/print something to the console
+    console.log("Hello World");
+
+    // Interpolated
+    const adj = "Happy";
+
+    console.log("Hello I am a %s person", "Happy"); // old way
+    console.log(`Hello I am a ${adj} person`); // template literals
+
+    // Styled
+    console.log("%c this line will be styled!", "font-size: 30px; color: blue; text-shadow: 10px 10px gray");
+
+    // warning! with a triangle warning logo
+    console.warn("This is a warning");
+
+    // Error :| with an error logo 
+    console.error("Holy wackamoly");
+
+    // Info
+    console.info("this will be information booth");
+
+    // Testing - If it is true, no message will be printed
+    console.assert(1 !== 1, "this will be the error message if the condition is wrong");
+
+    // clearing
+    console.clear();
+
+    // Viewing DOM Elements & info (method & properties) available to the element
+    const p = document.querySelector('p');
+    console.dir(p);
+
+    // Grouping together certain console log; console.group() will group but show all the information in the group, console.groupCollapsed() will hide the information and show it when clicked.
+    dogs.forEach(dog => {
+      console.groupCollapsed(`${dog.name}`);
+      console.log(`This is ${dog.name}`);
+      console.log(`${dog.name} is ${dog.age * 7} dog years old`);
+      console.groupEnd(`${dog.name}`);
+    })
+
+    // counting how many times we call certain string
+    console.count('blue');
+    console.count('blue');
+    console.count('red');
+    console.count('blue');
+    console.count('blue');
+    console.count('red');
+    console.count('blue');
+    console.count('blue');
+    console.count('red');
+
+    // timing
+    console.time('fetch data duration');
+    fetch('https://api.github.com/users/wesbos')
+      .then(data => data.json())
+      .then(data => {
+        console.timeEnd('fetch data duration');
+        console.log(data);
+      })
+
+    // display output in table format
+    console.table(dogs); 
+
+  </script>
+</body>
+</html>

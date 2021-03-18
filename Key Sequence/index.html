@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Key Detection</title>
+  <script type="text/javascript" src="https://www.cornify.com/js/cornify.js"></script>
+</head>
+<body>
+<script>
+
+  // set an empty array to store key input from user 
+  const input = [];
+
+  // string to match with key input from user
+  const secretCode = "lalala"
+
+  // add event listener to window for key input from user
+  window.addEventListener('keyup', (e) => {
+    // push the keystroke to arrary
+    input.push(e.key);
+
+    // if input lenght is more than length of secret code, remove the first element
+    if (input.length > secretCode.length) {
+      input.shift();
+    }
+    
+    // another method is to use splice to limit the length of input array 
+    // input.splice(-secretCode-1,input.length-secretCode.length);
+
+    // if the input from user match the secretCode, output a unicorn in the page
+    if (input.join('').includes(secretCode)) {
+      console.log("YOU NICORN!!");
+      cornify_add();
+    }
+  })
+
+</script>
+</body>
+</html>

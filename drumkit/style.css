@@ -4,7 +4,7 @@
 
 /* set the background image & width  */
 body {
-    background: url("/01\ -\ JavaScript\ Drum\ Kit/background.jpg");
+    background: url("./background.jpg");
     background-size: cover;
     width: 100%;
 }    

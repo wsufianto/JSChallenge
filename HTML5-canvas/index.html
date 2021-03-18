@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas>
+
+<script>
+  // grab the canvas element
+  const canvas = document.querySelector('#draw');
+
+  // set the canvas area to be drawn
+  const ctx = canvas.getContext('2d');
+
+  // set the canvas width & height according to window size
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // set the line cap & join to be ending in round shape
+  ctx.lineCap = "round";
+  ctx.lineJoin = 'round';
+
+  // set the line width for the drawing line to 1
+  ctx.lineWidth = 1;
+
+  // set the initial location for the mouse
+  let lineX = 0;
+  let lineY = 0;
+  
+  // to determine if the user is clicking the mouse down to draw & the line width size 
+  // and the color of the line
+  let drawing = false;
+  let direction = true;
+  let hue = 0;
+  
+  // function to draw on canvas
+  function draw(e) {
+    if (!drawing) return; // if it's not in drawing mode, return 
+    
+    // else start drawing 
+    ctx.beginPath(); // start the drawing
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`; // set the color of the line
+    ctx.moveTo(lineX, lineY); // starting line to draw from 
+    ctx.lineTo(e.offsetX, e.offsetY); // ending line to draw to
+    ctx.stroke(); // draw the line
+
+    // reset the lineX & lineY to latest know position 
+    [lineX, lineY] = [e.offsetX, e.offsetY];
+
+    // increase the hue to change the color and reset it if it's greater than 360
+    hue++;
+    if (hue > 360) { hue = 0 } 
+
+    // increase or decrease the line width depending on the value of direction (true/false)
+    if (ctx.lineWidth >= 60 || ctx.lineWidth <= 1) {
+      direction = !direction;
+    } 
+    if (direction) {
+      ctx.lineWidth++;
+    } else {
+      ctx.lineWidth--;
+    }
+  }
+  
+  // eventlistener to detect mouse down is pressed. set the drawing mode to true and get
+  // the positon of the mouse
+  canvas.addEventListener('mousedown', (e) => {
+    drawing = true;
+    [lineX, lineY] = [e.offsetX, e.offsetY];
+  });
+
+  // if drawing mode set to true, start drawing
+  canvas.addEventListener('mousemove', draw);
+
+  // if mouse is up or out of screen is detected, set the drawing mode to false
+  canvas.addEventListener('mouseup', () => drawing = false);
+  canvas.addEventListener('mouseout', () => drawing = false);
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+  }
+</style>
+
+</body>
+</html>
