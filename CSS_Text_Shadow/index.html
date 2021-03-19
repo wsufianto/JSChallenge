@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mouse Shadow</title>
+</head>
+<body>
+  <div class="hero">
+    <h1 contenteditable>🔥WOAH!</h1>
+  </div>
+
+  <style>
+  html {
+    color: black;
+    font-family: sans-serif;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+  }
+
+  h1 {
+    text-shadow: 10px 10px 0 rgba(0,0,0,1);
+    font-size: 100px;
+  }
+  </style>
+
+<script>
+
+  // grab the element from the html
+  const hero = document.querySelector('.hero');
+  const word = document.querySelector('h1');
+  const walk = 200; // how many pixel is the shadow gonna be
+
+  // function to show the shadow 
+  function shadow (e) {
+
+    // grab the width of the page/screen 
+    const { offsetWidth: x, offsetHeight: y } = hero;
+
+    // grab the x & y positon of the mouse
+    let { offsetX: mouseX, offsetY: mouseY } = e;
+
+    // if mouse move over children element in the screen, add the mouse offset to x & y
+    // to prevent mouse coordinate being reset
+    if (this !== e.target) {
+      mouseX = mouseX + e.target.offsetLeft;
+      mouseY = mouseY + e.target.offsetTop;
+    }
+
+    // calculate the shadow pixels
+    const shadowX = (mouseX/x * walk) - (walk/2);
+    const shadowY = (mouseY/y * walk) - (walk/2);
+    
+    // set the shadow pixel, blur, color properties
+    word.style.textShadow = `
+      ${shadowX}px ${shadowY}px 0 rgba(0,150,100,1),
+      ${shadowX * -1}px ${shadowY}px 0 rgba(200,0,0,1),
+      ${shadowX}px ${shadowY * -1}px 0 rgba(100,220,0,1),
+      ${shadowX * -1}px ${shadowY * -1}px 0 rgba(120,180,120,1)
+      `;
+  }
+
+  // even listener for the div element
+  hero.addEventListener('mousemove', shadow);
+
+</script>
+</body>
+</html>
