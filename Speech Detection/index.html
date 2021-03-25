@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Speech Detection</title>
+</head>
+
+<body>
+
+  <div class="words" contenteditable>
+  </div>
+
+  <script>
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    // create a new instance of SpeechRecognition
+    let speech = new SpeechRecognition();
+
+    // to let the speechrecognition return results as we speak
+    speech.interimResults = true;
+
+    // set default language for SpeechRecognition
+    speech.lang = 'en-AU';
+
+    // get the div tag to populate the speech
+    let paragraph = document.querySelector('.words');
+
+    // create a paragraph element and append it to paragrah div
+    let p = document.createElement('p');
+    paragraph.appendChild(p);
+
+    // start the speech recognition
+    speech.start();
+    console.log("Ready to rock and roll!");
+
+    // add event listernet to the speech recognition
+    speech.addEventListener('result', e => {
+
+      // extract the transcript from the results
+      let recording = [...e.results]
+        .map(result => result[0])
+        .map(result => result.transcript)
+        .join('');
+
+      // replace certain words in speech to symbols
+      recording = recording.replace(/poop|poo|shit|dung/gi, '💩');
+      recording = recording.replace(/love|heart/gi, '❤️');
+      recording = recording.replace(/smile/gi, '😊');
+
+      // assign the recording speech to paragrah element
+      p.textContent = recording;
+
+
+      // if certain pause is detected , create a new paragraph
+      if (e.results[0].isFinal) {
+        p = document.createElement('p');
+        paragraph.appendChild(p);
+      }
+    });
+
+    // add event listener to restart the speech recognition process
+    speech.addEventListener('end', speech.start);
+
+  </script>
+
+
+  <style>
+    html {
+      font-size: 10px;
+    }
+
+    body {
+      background: #ffc600;
+      font-family: 'helvetica neue';
+      font-weight: 200;
+      font-size: 20px;
+    }
+
+    .words {
+      max-width: 500px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 5px;
+      box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.1);
+      padding: 1rem 2rem 1rem 5rem;
+      background: -webkit-gradient(linear, 0 0, 0 100%, from(#d9eaf3), color-stop(4%, #fff)) 0 4px;
+      background-size: 100% 3rem;
+      position: relative;
+      line-height: 3rem;
+    }
+
+    p {
+      margin: 0 0 3rem;
+    }
+
+    .words:before {
+      content: '';
+      position: absolute;
+      width: 4px;
+      top: 0;
+      left: 30px;
+      bottom: 0;
+      border: 1px solid;
+      border-color: transparent #efe4e4;
+    }
+  </style>
+
+</body>
+
+</html>
