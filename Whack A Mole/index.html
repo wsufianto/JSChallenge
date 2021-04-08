@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Whack A Mole!</title>
+  <link href='https://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <h1>Whack-a-mole! <span class="score">0</span></h1>
+
+  <div class="game">
+    <div class="hole hole1">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole2">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole3">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole4">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole5">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole6">
+      <div class="mole"></div>
+    </div>
+  </div>
+
+  <div class="info">
+    <h3 class="time">
+      00:00
+    </h3>
+    <button class="start" type="button" onClick="startGame()">Start!</button>
+    <fieldset class="high-score">
+      <legend>Highest Score</legend>
+      <p class="high"></p>
+    </fieldset>
+  </div>
+
+  <script>
+    // get the elements from HTML & retrieve the highest score from localstorage if exists
+    const holes = document.querySelectorAll('.hole');
+    const scoreBoard = document.querySelector('.score');
+    const moles = document.querySelectorAll('.mole');
+    const timeDisplay = document.querySelector('.time');
+    const highestScore = document.querySelector('.high');
+    let countdown;
+    let holeId;
+    let timeUp = false;
+    let score = 0;
+    let playTime = 60; // in seconds
+    let started = false;
+    let latestHighScore = localStorage.getItem('highscore') || 0;
+    highestScore.textContent = `${latestHighScore} pts`; 
+
+    // function to return random time in milliseconds
+    const randomTime = (min, max) => {
+      return Math.floor(Math.random() * (max - min) + min);
+    }
+
+    // function to return random hole number
+    const randomHole = (holes) => {
+      const id = Math.floor(Math.random() * holes.length);
+      if (holeId === id) randomHole(holes);
+      holeId = id;
+      return holes[id];
+    }
+
+    // function to pop up the mole in random hole
+    const peep = () => {
+      const pHole = randomHole(holes);
+      const pTime = randomTime(500, 2000);
+      pHole.classList.add('up');
+      setTimeout(() => {
+        pHole.classList.remove('up');
+        if (!timeUp) peep();
+      }, pTime);
+    }
+
+    // function to display time Countdown
+    const displayTimeLeft = (seconds) => {
+      const min = Math.floor(seconds / 60);
+      const sec = seconds % 60;
+      const textDisplay = `${min < 10 ? '0' : ''}${min}:${sec < 10 ? '0' : ''}${sec}`;
+      timeDisplay.textContent = textDisplay;
+    };
+
+    // function for timer countdown
+    const timer = (seconds) => {
+      clearInterval(countdown);
+      displayTimeLeft(seconds);
+      countdown = setInterval(() => {
+        seconds--;
+        displayTimeLeft(seconds);
+
+        // if countdown reaches 0, clear the interval
+        if (seconds === 0) {
+          clearInterval(countdown);
+        }
+      }, 1000);
+    }
+    
+    // function to start the game & set the highsest score
+    const startGame = () => {
+      if(started) return;
+      started = true;
+      timeUp = false;
+      score = 0;
+      scoreBoard.textContent = score;
+      peep();
+      timer(playTime);
+      setTimeout(() => {
+        timeUp = true;
+        started = false;
+        if (score > latestHighScore) {
+          localStorage.setItem('highscore', score);
+          highestScore.textContent = `${score} Pts`;
+          latestHighScore = score;
+        }  
+      }, (playTime * 1000) + 1000);
+    }
+    
+    // function to count the score
+    const countScore = (e) => {
+      if (!e.isTrusted) return;
+      score++;
+      e.target.parentNode.classList.remove('up');
+      scoreBoard.textContent = score;
+      // console.log(score);
+    }
+
+    // event listener to check for click on moles
+    moles.forEach(mole => mole.addEventListener('click', countScore));
+
+  </script>
+</body>
+
+</html>
